@@ -12,6 +12,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 
 /**
@@ -21,6 +23,8 @@ public class MoviePosterViewAdapter extends ArrayAdapter<MovieDetails> {
     private Context mContext;
     private int mResource;
     private List<MovieDetails> mPosterUrlList;
+    @Bind(R.id.image_view_movie_poster)
+    protected ImageView poster;
 
     public MoviePosterViewAdapter(Context context, int resource, List<MovieDetails> posterUrlList) {
         super(context, resource, posterUrlList);
@@ -38,7 +42,8 @@ public class MoviePosterViewAdapter extends ArrayAdapter<MovieDetails> {
             LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
             row = inflater.inflate(mResource, parent, false);
             holder = new ViewHolder();
-            holder.moviePoster = (ImageView) row.findViewById(R.id.image_view_movie_poster);
+            ButterKnife.bind(this,row);
+            holder.moviePoster = poster;
             row.setTag(holder);
         } else {
             holder = (ViewHolder) row.getTag();
@@ -51,6 +56,7 @@ public class MoviePosterViewAdapter extends ArrayAdapter<MovieDetails> {
                 .error(R.drawable.broken_image).into(holder.moviePoster);
         return row;
     }
+
     static class ViewHolder {
         ImageView moviePoster;
     }

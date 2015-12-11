@@ -105,7 +105,7 @@ public class MovieJSONUtil {
                 apiKey = reader.readLine();
             }
         } catch (IOException e) {
-            Log.i(LOG_TAG, "The API file is empty");
+            Log.i(LOG_TAG, "The API file is empty or doesn't exist");
         } finally {
             if (is != null) {
                 try {
@@ -140,8 +140,6 @@ public class MovieJSONUtil {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
         return movieDetailsList;
     }
 
@@ -153,9 +151,7 @@ public class MovieJSONUtil {
         for (MovieDetails details : movieDetailsList) {
             builder = new StringBuilder();
             builder.append(authority).append(baseUrl).append(details.getMoviePosterURL());
-            Log.i(LOG_TAG, builder.toString());
             details.setMoviePosterURL(builder.toString());
-
         }
     }
 }

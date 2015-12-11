@@ -2,7 +2,12 @@
     <string name="app_name">Popular Movies</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="image_view_movie_poster_content">Thumbnail pictures of movie posters</string>
+    <string name="image_view_movie_poster_content">Pictures of movie posters</string>
+    <string name="image_view_thumb_content">Thumbnail of the movie posters</string>
+
+
+
+
 
     <!-- Strings related to Settings -->
 
@@ -28,4 +33,5 @@
         <item>0</item>
         <item>-1</item>
     </string-array>
+    <string name="title_activity_movie_details">MovieDetailsActivity</string>
 </resources>

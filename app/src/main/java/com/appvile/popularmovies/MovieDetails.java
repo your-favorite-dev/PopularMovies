@@ -1,9 +1,12 @@
 package com.appvile.popularmovies;
 
+import java.io.Serializable;
+
 /**
  * Created by SHC_Group on 12/4/15.
  */
-public class MovieDetails {
+public class MovieDetails implements Serializable{
+    private static final long serialVersionUID = 1L;
 
     private String title;
     private String overview;
