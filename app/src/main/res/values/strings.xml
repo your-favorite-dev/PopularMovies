@@ -21,6 +21,6 @@
         <item>1</item>
         <item>2</item>
     </string-array>
-
+    <string name="refresh">Refresh</string>
     <string name="title_activity_movie_details">MovieDetailsActivity</string>
 </resources>

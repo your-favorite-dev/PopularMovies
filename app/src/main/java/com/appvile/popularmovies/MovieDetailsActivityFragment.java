@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -46,22 +49,39 @@ public class MovieDetailsActivityFragment extends Fragment {
         Intent intent = getActivity().getIntent();
         if (intent != null && intent.hasExtra("movieObject")) {
             MovieDetails movie = (MovieDetails) intent.getExtras().get("movieObject");
-            if(movie != null){
+            if (movie != null) {
                 MovieDetailBuilder detailBuilder = new MovieDetailBuilder();
                 ButterKnife.bind(this, view);
                 movieDetails.setText(detailBuilder.buildMovieDetails(movie));
-                if(movie.getOverview() == null){
+                if (movie.getOverview() == null) {
                     movie.setOverview("No summary available");
                 }
                 summary.setText(detailBuilder.buildMovieOverview(movie));
                 Picasso.with(getContext()).load(movie.getMoviePosterURL())
-                        .resize(250,300)
+                        .resize(250, 300)
                         .centerCrop()
                         .placeholder(R.drawable.image_placeholder)
                         .error(R.drawable.broken_image).into(thumbnail);
             }
         }
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            Intent intent = new Intent(getActivity(), SettingsActivity.class);
+            startActivity(intent);
+        }
+        return true;
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
