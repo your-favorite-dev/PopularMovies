@@ -1,18 +1,35 @@
 package com.appvile.popularmovies;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-/**
- * Created by SHC_Group on 12/4/15.
- */
-public class MovieDetails implements Serializable{
-    private static final long serialVersionUID = 1L;
+public class MovieDetails implements Parcelable {
 
     private String title;
     private String overview;
     private String userRating;
     private String releaseDate;
     private String moviePosterURL;
+
+    protected MovieDetails(Parcel in) {
+        title = in.readString();
+        overview = in.readString();
+        userRating = in.readString();
+        releaseDate = in.readString();
+        moviePosterURL = in.readString();
+    }
+
+    public static final Creator<MovieDetails> CREATOR = new Creator<MovieDetails>() {
+        @Override
+        public MovieDetails createFromParcel(Parcel in) {
+            return new MovieDetails(in);
+        }
+
+        @Override
+        public MovieDetails[] newArray(int size) {
+            return new MovieDetails[size];
+        }
+    };
 
     public String getTitle() {
         return title;
@@ -61,5 +78,19 @@ public class MovieDetails implements Serializable{
                 ", userRating='" + userRating + '\'' +
                 ", releaseDate='" + releaseDate + '\'' +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(overview);
+        dest.writeString(userRating);
+        dest.writeString(releaseDate);
+        dest.writeString(moviePosterURL);
     }
 }

@@ -1,9 +1,8 @@
 package com.appvile.popularmovies;
 
 import android.content.Intent;
-import android.graphics.Movie;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,30 +47,21 @@ public class MovieDetailsActivityFragment extends Fragment {
         if (intent != null && intent.hasExtra("movieObject")) {
             MovieDetails movie = (MovieDetails) intent.getExtras().get("movieObject");
             if(movie != null){
-                StringBuilder sb = new StringBuilder();
-                sb.append("Title: ").append(movie.getTitle()).append("\n");
-                sb.append("Release Date: ").append(movie.getReleaseDate()).append("\n");
-                sb.append("User Rating: ").append(movie.getUserRating()).append("\n");
+                MovieDetailBuilder detailBuilder = new MovieDetailBuilder();
                 ButterKnife.bind(this, view);
-                movieDetails.setText(sb.toString());
+                movieDetails.setText(detailBuilder.buildMovieDetails(movie));
                 if(movie.getOverview() == null){
                     movie.setOverview("No summary available");
                 }
-                sb = new StringBuilder();
-                sb.append("Overview: ").append("\n").append(movie.getOverview());
-                summary.setText(sb.toString());
+                summary.setText(detailBuilder.buildMovieOverview(movie));
                 Picasso.with(getContext()).load(movie.getMoviePosterURL())
                         .resize(250,300)
                         .centerCrop()
                         .placeholder(R.drawable.image_placeholder)
                         .error(R.drawable.broken_image).into(thumbnail);
             }
-
-
         }
-
     }
-
     @Override
     public void onDestroy() {
         super.onDestroy();

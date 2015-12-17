@@ -1,7 +1,9 @@
 package com.appvile.popularmovies;
 
 import android.content.Context;
-import android.net.Uri;
+import android.content.SharedPreferences;
+import android.os.Parcel;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -17,9 +19,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by SHC_Group on 12/3/15.
- */
 public class MovieJSONUtil {
     private Context mContext;
     private String LOG_TAG = MovieJSONUtil.class.getSimpleName();
@@ -29,36 +28,28 @@ public class MovieJSONUtil {
     }
 
     public synchronized List<MovieDetails> getJSONMovieData(String pageNumber) {
-        final String authority = "api.themoviedb.org";
-        final String popularity = "popularity.dsc";
-        final String country = "US";
-        final String votes = "50";
-        String page = pageNumber;
-        String apiKey = loadApiKey();
         String jsonMovieString = "";
-        List<MovieDetails> movieDetailsList = null;
-        URL url = null;
+        List<MovieDetails> movieDetailsList;
+        URL url;
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
 
         try {
-            Uri.Builder builder = new Uri.Builder();
+            MovieDbUriUtil uriUtil = new MovieDbUriUtil(mContext);
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+            String orderPreference = sharedPreferences.getString(mContext.getString(R.string.pref_order_by_key),
+                    mContext.getString(R.string.pref_order_by_default));
+            Log.i(LOG_TAG, "Preference value from settings: " + orderPreference);
+            if ("1".equals(orderPreference)) {
+                url = uriUtil.createPopularityUri(pageNumber);
+            } else {
+                url = uriUtil.createRatingsUri(pageNumber);
+            }
 
-            builder.scheme("https")
-                    .authority(authority)
-                    .appendEncodedPath("3")
-                    .appendEncodedPath("discover")
-                    .appendEncodedPath("movie")
-                    .appendQueryParameter("api_key", apiKey)
-                    .appendQueryParameter("sort_by", popularity)
-                    .appendQueryParameter("certification_country", country)
-                    .appendQueryParameter("vote_count.gte", votes)
-                    .appendQueryParameter("page", page);
-            url = new URL(builder.build().toString());
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
-            Log.i(LOG_TAG,url.toString());
+            Log.i(LOG_TAG, "API Call URL: "  + url.toString());
 
             InputStream jsonInputStream = urlConnection.getInputStream();
             StringBuilder stringBuilder = new StringBuilder();
@@ -120,14 +111,14 @@ public class MovieJSONUtil {
 
     private List<MovieDetails> parseJSONString(String movieStringJSON) {
         final String movieObjectKey = "results";
-        JSONObject movieJSON = null;
+        JSONObject movieJSON;
         List<MovieDetails> movieDetailsList = new ArrayList<>();
         try {
             movieJSON = new JSONObject(movieStringJSON);
             JSONArray movieArray = movieJSON.getJSONArray(movieObjectKey);
 
             for (int i = 0; i < movieArray.length(); i++) {
-                MovieDetails details = new MovieDetails();
+                MovieDetails details = new MovieDetails(Parcel.obtain());
                 JSONObject singleMovieObject = movieArray.getJSONObject(i);
                 details.setTitle(singleMovieObject.getString("title"));
                 details.setOverview(singleMovieObject.getString("overview"));
@@ -145,7 +136,7 @@ public class MovieJSONUtil {
 
     private void createPosterUrl(List<MovieDetails> movieDetailsList) {
         final String authority = "http://image.tmdb.org/";
-        final String baseUrl = "t/p/w500";
+        final String baseUrl = "t/p/w342";
         StringBuilder builder;
 
         for (MovieDetails details : movieDetailsList) {

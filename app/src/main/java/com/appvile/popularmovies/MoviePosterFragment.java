@@ -1,7 +1,6 @@
 package com.appvile.popularmovies;
 
 import android.content.Intent;
-import android.graphics.Movie;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -28,7 +27,6 @@ public class MoviePosterFragment extends Fragment {
     protected GridView posterGrid;
     private String LOG_TAG = MoviePosterFragment.class.getSimpleName();
     private MoviePosterViewAdapter moviePosterAdapter;
-    private List<MovieDetails> posterUrlList;
     private int urlPage = 1;
 
     public MoviePosterFragment() {
@@ -37,13 +35,14 @@ public class MoviePosterFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        new MoviePosterManager().execute(String.valueOf(urlPage));
+        getMoviePosters();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.i(LOG_TAG,"Current API page loaded: " + urlPage);
+        List<MovieDetails> posterUrlList;
+        Log.i(LOG_TAG, "Current API page loaded: " + urlPage);
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         posterUrlList = new ArrayList<>();
         moviePosterAdapter = new MoviePosterViewAdapter(getContext(),
@@ -71,7 +70,6 @@ public class MoviePosterFragment extends Fragment {
 
                 if (total == firstVisibleItem && firstVisibleItem != 0) {
                     urlPage++;
-                    Log.i(LOG_TAG, "Current items loaded: " + totalItemCount);
                     new MoviePosterManager().execute(String.valueOf(urlPage));
                 }
             }
@@ -79,22 +77,23 @@ public class MoviePosterFragment extends Fragment {
 
         return view;
     }
-
+    private void getMoviePosters(){
+        new MoviePosterManager().execute(String.valueOf(urlPage));
+    }
 
     protected class MoviePosterManager extends AsyncTask<String, Void, List<MovieDetails>> {
 
         @Override
         protected List<MovieDetails> doInBackground(String... params) {
-
             return new MovieJSONUtil(getContext()).getJSONMovieData(params[0]);
         }
 
         @Override
         protected void onPostExecute(List<MovieDetails> result) {
-            if (result != null) {
+            if (result != null && result.size() > 0) {
                 moviePosterAdapter.addAll(result);
-            }else{
-                Toast.makeText(getContext(),"There was an issue updating the movies", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "There was an issue updating the movies", Toast.LENGTH_LONG).show();
             }
         }
     }
