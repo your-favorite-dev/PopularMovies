@@ -48,8 +48,8 @@ public class MoviePosterViewAdapter extends ArrayAdapter<MovieDetails> {
         } else {
             holder = (ViewHolder) row.getTag();
         }
-        String url = mPosterUrlList.get(position).getMoviePosterURL();
-        Picasso.with(getContext()).load(url)
+        String url = mPosterUrlList.get(position).getPoster_path();
+        Picasso.with(getContext()).load("http://image.tmdb.org/t/p/w500/"+url)
                 .resize(450,550)
                 .centerCrop()
                 .placeholder(R.drawable.image_placeholder)

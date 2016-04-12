@@ -3,6 +3,7 @@ package com.appvile.popularmovies;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -57,11 +58,12 @@ public class MovieDetailsActivityFragment extends Fragment {
                     movie.setOverview("No summary available");
                 }
                 summary.setText(detailBuilder.buildMovieOverview(movie));
-                Picasso.with(getContext()).load(movie.getMoviePosterURL())
+                Picasso.with(getContext()).load("http://image.tmdb.org/t/p/w500/"+movie.getPoster_path())
                         .resize(250, 300)
                         .centerCrop()
                         .placeholder(R.drawable.image_placeholder)
                         .error(R.drawable.broken_image).into(thumbnail);
+                Log.e(MovieDetailsActivityFragment.class.getSimpleName(), "Poster path: " + movie.getPoster_path());
             }
         }
     }
